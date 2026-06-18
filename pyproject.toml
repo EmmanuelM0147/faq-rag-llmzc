@@ -1,7 +1,7 @@
 [project]
 name = "faq-rag-llmzc"
 version = "0.1.0"
-description = "Add your description here"
+description = "RAG pipeline for FAQ Q&A using BM25 retrieval and Google Gemini"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
