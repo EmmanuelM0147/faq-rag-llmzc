@@ -1,16 +1,20 @@
-# FAQ RAG — LLM Zoomcamp
+# FAQ RAG Assistant
 
-Retrieval-augmented generation (RAG) over the [DataTalks.Club FAQ](https://datatalks.club/faq/) for **LLM Zoomcamp**. The project loads course FAQ documents, searches them with BM25-style retrieval, and answers questions using **Google Gemini**.
+A retrieval-augmented generation (RAG) pipeline that answers questions from a structured FAQ knowledge base. Documents are retrieved with BM25-style search, then synthesized into natural-language answers with Google Gemini.
 
-Built as part of the LLM Zoomcamp course.
+## How it works
+
+1. **Ingest** — Load FAQ documents from a public JSON API
+2. **Retrieve** — Search by question, section, and answer text (in-memory or SQLite)
+3. **Generate** — Send retrieved context to Gemini with a fixed system instruction
 
 ## Features
 
-- FAQ ingestion from the DataTalks.Club API
+- FAQ ingestion from a public API
 - In-memory search with `minsearch`
 - Persistent SQLite search with `sqlitesearch` (`faq.db`)
-- Reusable `RAGBase` helper with Gemini integration and model fallback
-- Jupyter notebooks covering the full RAG workflow
+- Reusable `RAGBase` helper with Gemini integration and automatic model fallback
+- Jupyter notebooks for exploration and ingestion
 
 ## Requirements
 
@@ -56,14 +60,14 @@ python -m uv run jupyter notebook
 
 | File | Description |
 |------|-------------|
-| `ingest.py` | Load FAQ data from DataTalks.Club and build a `minsearch` index |
+| `ingest.py` | Load FAQ data and build a `minsearch` index |
 | `rag_helper.py` | `RAGBase` class — search, prompt building, and Gemini calls |
-| `notebook.ipynb` | Main course notebook: RAG from scratch with Gemini |
-| `rag_cleaned.ipynb` | Simplified RAG workflow |
+| `notebook.ipynb` | End-to-end RAG walkthrough |
+| `rag_cleaned.ipynb` | Streamlined RAG workflow |
 | `rag_ingest.ipynb` | Build an in-memory search index |
-| `persistent_rag_ingest.ipynb` | Ingest LLM Zoomcamp FAQs into SQLite (`faq.db`) |
+| `persistent_rag_ingest.ipynb` | Ingest FAQs into SQLite (`faq.db`) |
 | `sqlite-ingest.ipynb` | SQLite ingest with progress output |
-| `persinsent_rag.ipynb` | RAG using the persistent SQLite index |
+| `persinsent_rag.ipynb` | Query the persistent SQLite index |
 
 ## Usage
 
@@ -90,7 +94,7 @@ print(assistant.rag("I just discovered the course. Can I join now?"))
 ### Persistent SQLite RAG
 
 1. Run `persistent_rag_ingest.ipynb` to build `faq.db`.
-2. Use the index in `persinsent_rag.ipynb`:
+2. Query with `persinsent_rag.ipynb`:
 
 ```python
 from sqlitesearch import TextSearchIndex
@@ -120,10 +124,10 @@ assistant = RAGBase(index, genai_client, model="gemini-3.1-flash-lite")
 
 ## Notes
 
-- Loading all FAQ data takes ~30–60 seconds (network requests to DataTalks.Club).
+- Loading all FAQ data takes ~30–60 seconds (network requests to the data source).
 - `faq.db`, `.env`, and `.venv` are gitignored — create them locally.
 - Free-tier Gemini API quotas may cause `429` errors; the helper retries and tries fallback models automatically.
 
-## License
+## Acknowledgments
 
-Course homework / learning project.
+FAQ data from [DataTalks.Club](https://datatalks.club/faq/). Built while studying LLM engineering and retrieval-augmented generation.
